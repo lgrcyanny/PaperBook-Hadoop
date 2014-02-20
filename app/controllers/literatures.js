@@ -10,6 +10,7 @@ var path = require('path');
 var moment = require('moment');
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
+var hdfs = require('./hdfs');
 
 
 exports.fetchById = function (req, res, next, id) {
@@ -193,15 +194,45 @@ exports.removeFile = function (req, res) {
         error: err
       });
     }
-    res.send({success: true});
+
+    // Delete the file from HDFS
+    hdfs.deleteFile(filepath, function (err, stdout, stderr) {
+      if (err) {
+        console.log('HDFS delete err:' + err);
+        res.send({
+          success: false,
+          errors: err
+        });
+      }
+      console.log('HDFS Delete stdout: ' + stdout);
+      console.log('HDFS Delete stderr: ' + stderr);
+      res.send({success: true});
+    });
+
   });
 }
 
 exports.downloadFile = function (req, res) {
   var filepath = req.query.filepath;
+  // Load the file from HDFS when not exists on local file system
+  fs.stat(filepath, function (err) {
+    if (err) {
+      hdfs.getFile(filepath, function (err, stdout, stderr) {
+        if (err) {
+          console.log('HDFS Get File Error: ' + err);
+        } else {
+          console.log('HDFS Get File stdout: ' + stdout);
+          console.log('HDFS Get File stderr: ' + stderr);
+          res.download(filepath);
+        }
+      });
+    } else {
+      res.download(filepath);
+    }
+  })
   //console.log(filepath);
-  var filename = path.basename(filepath);
-  res.download(filepath);
+  //var filename = path.basename(filepath);
+  //res.download(filepath);
 }
 
 exports.showMyLiteraturePage = function (req, res, next) {
@@ -301,15 +332,24 @@ var uploadFile = function (file, type, username, res) {
         console.log(err);
         res.send({success: false, errors: err});
       }
-      res.send({
-        success: true,
-        file: {
-          name: filename,
-          type: filetype,
-          size: filesize,
-          extension: fileExtension,
-          path: serverpath
+      // Save file to HDFS
+      hdfs.putFile(serverpath, function (err, stdout, stderr) {
+        console.log('HDFS stdout: ' + stdout);
+        console.log('HDFS stderr: ' + stderr);
+        if (err) {
+          console.log(err);
+          res.send({success: false, errors: err});
         }
+        res.send({
+          success: true,
+          file: {
+            name: filename,
+            type: filetype,
+            size: filesize,
+            extension: fileExtension,
+            path: serverpath
+          }
+        });
       });
     });
   });
