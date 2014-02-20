@@ -1,14 +1,14 @@
-# PaperBook Overview
+# PaperBook Hadoop Overview
  PaperBook is a Literature Management System, which is shipped with convenient literature upload, search, comment and greate communication functions for a private research group.<br>
- First step, we built the system based on Node.js + Express + MySQL<BR>
- Second step, migrate big data to HBase, make use of Hadoop to build a cloud research platform.
+ Originally, we built the system based on Node.js + Express + MySQL<BR>
+ Now, we migrate the project to Hadoop and HBase. We make use of HDFS to save literaute files and use HBase to do database work.
 
 # Team Member
 + [Cyanny Liang](http://www.cyanny.com)
 + Thomas Zhang
 + Aaron Feng
 
-## Install
+## Install for the MySQL version
 
 **NOTE:** You need to have node.js, mysql installed <BR>
 1. Clone the project
@@ -37,6 +37,13 @@ Please config your mysql in the `config.js`;
 6. Then visit [http://localhost:3000/](http://localhost:3000/)
 
 7. **NOTE:**, the database is empty, please build it by yourself, and the uploads dir is not include, it will create when you upload files.
+
+## Install Hadoop for HDFS storage
+We adopt Hadoop 2.2.0, which is shipped with more new features.
+1. Please follow the [blog guide](http://www.cyanny.com/2014/02/06/set-hadoop-hbase-part1/) to install Hadoop 2.2.0
+2. You can start the project the same as the MySQL version by `npm start`
+3. Please try to upload, delete and download literatures, up to now these files will be saved/deleted/get on HDFS
+
 
 ## Related modules
 [node-express-mongoose-demo](https://github.com/madhums/node-express-mongoose-demo)
