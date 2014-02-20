@@ -26,8 +26,15 @@ module.exports = {
   },
 
   getFile: function (filepath, callback) {
-    var command = this.commands.get + filepath + ' ' + filepath;
-    var child = exec(command, callback);
+    var dirpath = path.dirname(filepath);
+    var self = this;
+    exec('mkdir -p ' + dirpath, function (err) {
+      if (err) {
+        console.log(err);
+      }
+      var command = self.commands.get + filepath + ' ' + filepath;
+      var child = exec(command, callback);
+    });
   },
 
   deleteFile: function (filepath, callback) {
