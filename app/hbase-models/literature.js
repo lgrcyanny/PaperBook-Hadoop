@@ -48,7 +48,7 @@ module.exports = {
         new HBaseTypes.TColumnValue({
           family: 'info',
           qualifier: 'user_id',
-          value: literature.user_id
+          value: '' + literature.user_id
         })
       ]
     });
@@ -143,19 +143,26 @@ module.exports = {
   },
 
   findByUser: function (userid, cb) {
+    console.log(userid);
     var tscan = new HBaseTypes.TScan({
       columns: [
         new HBaseTypes.TColumn({
           family: 'info',
           qualifier: 'title'
+        }),
+        new HBaseTypes.TColumn({
+          family: 'info',
+          qualifier: 'user_id'
         })
       ],
-      filterString: "(SingleColumnValueFilter('info', 'user_id', =, 'regexstring:" + userid + "', true, true))"
-    });
+      filterString: "(SingleColumnValueFilter('info', 'user_id', =, 'regexstring: *" + userid + "*', true, true))"
+    }); // What you filter must be in the array of columns, or there is empty set
     hbase.scan(this.table, tscan, 100, function (err, data) {
       if (err) {
         cb(err);
       }
+      console.log('findByUser:');
+      console.log(data);
       var literatures = [];
       for (var i = 0; i < data.length; i++) {
         var row = data[i];
