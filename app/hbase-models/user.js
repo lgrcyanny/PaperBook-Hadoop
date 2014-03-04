@@ -17,7 +17,7 @@ module.exports = {
   findById: function (id, cb) {
     var tget = new HBaseTypes.TGet({
       row: id,
-      columons: [new HBaseTypes.TColumn({family: 'info', qualifier: 'user'})]
+      columns: [new HBaseTypes.TColumn({family: 'info', qualifier: 'user'})]
     })
     hbase.get(this.table, tget, function (err, data) {
       if (err) {
@@ -37,7 +37,7 @@ module.exports = {
     var tscan = new HBaseTypes.TScan({
       columns: [new HBaseTypes.TColumn({family: 'info', qualifier: 'user'})]
     });
-    hbase.scan(this.table, tscan, function (err, data) {
+    hbase.scan(this.table, tscan, 100,function (err, data) {
       if (err) {
         cb(err);
       }
@@ -49,7 +49,7 @@ module.exports = {
         users.push(info);
       }
       cb(null, users);
-    })
+    });
   },
 
   /**
