@@ -38,7 +38,9 @@
     "less-middleware": "~0.1.14",
     "mysql": "~2.0.0-rc1",
     "mkdirp": "~0.3.5",
-    "squel": "latest"
+    "squel": "latest",
+    "thrift": "~0.9.1",
+    "MD5": "~1.2.0"
   },
   "devDependencies": {
     "supertest": "latest",

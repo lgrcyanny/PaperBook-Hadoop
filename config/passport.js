@@ -1,5 +1,6 @@
 var LocalStrategy = require('passport-local').Strategy;
-var usermodel = require('../app/models/user.js');
+var usermodel = require('../app/hbase-models/user.js');
+var md5 = require('MD5');
 
 
 module.exports = function (passport, config) {
@@ -9,8 +10,8 @@ module.exports = function (passport, config) {
   });
 
   passport.deserializeUser(function(id, done) {
-    usermodel.findById(id, function (err, results) {
-      done(err, results[0]);
+    usermodel.findById(id, function (err, result) {
+      done(err, result);
     });
   });
 
@@ -20,12 +21,12 @@ module.exports = function (passport, config) {
       passwordField: 'password'
     },
     function(email, password, done) {
-      usermodel.find({ email: email }, function (err, results) {
+      usermodel.findById(md5(email), function (err, result) {
         if (err) { return done(err) }
-        if (results.length !== 1) {
+        if (!result) {
           return done(null, false, { message: 'Unknown user' + email })
         }
-        var user = results[0];
+        var user = result;
         if (!usermodel.authenticate(password, user)) {
           console.log('Invalid password');
           return done(null, false, { message: 'Invalid password' })

@@ -3,7 +3,8 @@
  * Module dependencies.
  */
 
-var usermodel = require('../models/user.js');
+var usermodel = require('../hbase-models/user.js');
+var md5 = require('MD5');
 
 /**
  * Show Sign In Page
@@ -85,7 +86,7 @@ exports.showProfile = function (req, res) {
 }
 
 exports.showtestuser = function (req, res) {
-  usermodel.find(null, function (err, results) {
+  usermodel.findById(md5('lgrcyanny@gmail.com'), function (err, results) {
     res.send(results);
   });
 }
@@ -98,9 +99,9 @@ exports.list = function (req, res) {
  * Find user by id
  */
 exports.user = function (req, res, next, id) {
-  usermodel.findById(id, function (err, results) {
+  usermodel.findById(id, function (err, result) {
     if (err) return next(err);
-    var user = results[0];
+    var user = result;
     if (!user) return next(new Error('Failed to load User ' + id));
     req.profile = user;
     next();
