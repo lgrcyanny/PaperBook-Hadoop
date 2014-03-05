@@ -39,11 +39,38 @@ Please config your mysql in the `config.js`;
 7. **NOTE:**, the database is empty, please build it by yourself, and the uploads dir is not include, it will create when you upload files.
 
 ## Install Hadoop for HDFS storage
-We adopt Hadoop 2.2.0, which is shipped with more new features.
-1. Please follow the [blog guide](http://www.cyanny.com/2014/02/06/set-hadoop-hbase-part1/) to install Hadoop 2.2.0
-2. You can start the project the same as the MySQL version by `npm start`
-3. Please try to upload, delete and download literatures, up to now these files will be saved/deleted/get on HDFS
+We adopt Hadoop 2.2.0, which is shipped with more new features.<BR>
+1. Please follow the [blog guide](http://www.cyanny.com/2014/02/06/set-hadoop-hbase-part1/) to install Hadoop 2.2.0<BR>
+2. You can start the project the same as the MySQL version by `npm start`<BR>
+3. Please try to upload, delete and download literatures, up to now these files will be saved/deleted/get on HDFS<BR>
 
+## Install HBase and Thrift
+We adopt HBase 0.96.1 which support Hadoop 2.2 well, and we use thrift interface to communicate with HBase.<BR>
+1.Install and Config HBase with pseudo mode, you can refer to [the blog](http://www.cyanny.com/2014/02/06/set-hadoop-hbase-part2/)<BR>
+2.You can lean something about thrift [here](http://www.cyanny.com/2014/02/27/nodejs-hbase-hadoop2-thrift2%e9%85%8d%e7%bd%ae%e4%b8%8e%e4%bd%bf%e7%94%a8/).<BR>
+3.since you have run 'npm install', the thrift package is installed, now you can open hbase to create some table:<BR>
+```sh
+  $ start-hbase.sh
+  $ hbsae shell
+  > create 'pb_users', 'info'
+  > create 'pb_literatures', 'info'
+  > create 'pb_comments', 'brief_draft', 'brief_publish', 'rich_draft', 'rich_publish'
+  > create 'pb_config', 'info'
+  > create 'pb_cited', 'info'
+```
+<BR>
+4.start thrift2<BR>
+We use thrift2 API provided by HBase 0.96, since the thrift1 will be deprecated in future.<BR>
+```sh
+ $ hbase thrift2 start -f # Use TFramedTransport, This transport is required when using a non-blocking server. It sends data in frames, where each frame is preceded by length information.
+```
+5.Start and use paperbook now<BR>
+```sh
+ $ npm start
+```
+<BR>
+Now only upload, update, browser detail and my literature, register, login is based on HBase.<BR>
+The comments, admin config and search is based on MySQL, so you must start MySQL as well.
 
 ## Related modules
 [node-express-mongoose-demo](https://github.com/madhums/node-express-mongoose-demo)
