@@ -22,11 +22,6 @@ module.exports = {
         }),
         new HBaseTypes.TColumnValue({
           family: 'info',
-          qualifier: 'abstract',
-          value: literature.abstract
-        }),
-        new HBaseTypes.TColumnValue({
-          family: 'info',
           qualifier: 'basic',
           value: basicinfo
         }),
@@ -133,8 +128,8 @@ module.exports = {
             literature[columnItem.qualifier] = columnItem.value;
           }
         }
-        literature.score_count = parseInt(literature.score_count);
-        literature.score_avg = parseFloat(literature.score_avg);
+        literature.score_count = literature.score_count ? parseInt(literature.score_count) : 0;
+        literature.score_avg = literature.score_avg ? parseFloat(literature.score_avg) : 0;
         literature.id = data.row;
       }
       //console.log(data.columnValues);
@@ -162,7 +157,7 @@ module.exports = {
         cb(err);
       }
       console.log('findByUser:');
-      console.log(data);
+      //console.log(data);
       var literatures = [];
       for (var i = 0; i < data.length; i++) {
         var row = data[i];
@@ -327,7 +322,7 @@ module.exports = {
         cb(err);
       }
       var literature = {};
-      literature.tags = data.columnValues ? data.columnValues[0].value : '';
+      literature.tags = data.columnValues.length ? data.columnValues[0].value : '';
       cb(null, literature);
     });
   }

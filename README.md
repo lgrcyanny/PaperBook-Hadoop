@@ -11,32 +11,32 @@
 ## Install for the MySQL version
 
 **NOTE:** You need to have node.js, mysql installed <BR>
-1. Clone the project
+1.Clone the project<BR>
 ```sh
   $ git clone https://github.com/lgrcyanny/PaperBook-MySQL
   $ npm install
   $ cp config/config.disk.js config/config.js
 ```
-Please config your mysql in the `config.js`;
+Please config your mysql in the `config.js`;<BR>
 
-2. Install mysql[http://dev.mysql.com/downloads/]
+2.Install mysql[http://dev.mysql.com/downloads/]<BR>
 
-3. Start mysql service and change mysql root password into 'root'
+3.Start mysql service and change mysql root password into 'root'<BR>
 
-4. Build the database
+4.Build the database<br>
 ```sh
   $ mysql -u root -p
   > create database paperbook
   > quit
   $ mysql -u root -pyourpassword paperbook < paperbook.sql
 ```
-5. Start Server
+5.Start Server<br>
 ```sh
   $ npm start
 ```
-6. Then visit [http://localhost:3000/](http://localhost:3000/)
+6.Then visit [http://localhost:3000/](http://localhost:3000/)<br>
 
-7. **NOTE:**, the database is empty, please build it by yourself, and the uploads dir is not include, it will create when you upload files.
+7. **NOTE:**, the database is empty, please build it by yourself, and the uploads dir is not include, it will create when you upload files.<br>
 
 ## Install Hadoop for HDFS storage
 We adopt Hadoop 2.2.0, which is shipped with more new features.<BR>
@@ -71,6 +71,11 @@ We use thrift2 API provided by HBase 0.96, since the thrift1 will be deprecated 
 <BR>
 Now only upload, update, browser detail and my literature, register, login is based on HBase.<BR>
 The comments, admin config and search is based on MySQL, so you must start MySQL as well.
+
+## Build MapReduce Inverted Index for Search
+Please refer to [PaperBook-MapReduce](https://github.com/lgrcyanny/PaperBook-MapReduce)
+After you have build the reverted index in HBase, you can try the search function
+
 
 ## Related modules
 [node-express-mongoose-demo](https://github.com/madhums/node-express-mongoose-demo)

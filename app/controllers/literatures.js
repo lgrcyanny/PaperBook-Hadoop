@@ -349,9 +349,9 @@ var getFileSize = function (size) {
 }
 
 var wrapLiteratureForShow = function (literature) {
-  literature.file = JSON.parse(literature.file);
-  literature.accessories = JSON.parse(literature.accessories);
-  literature.references = JSON.parse(literature.references);
+  literature.file = literature.file ? JSON.parse(literature.file) : {};
+  literature.accessories = literature.accessories ? JSON.parse(literature.accessories) : [];
+  literature.references = literature.references ? JSON.parse(literature.references) : [];
   return literature;
 }
 

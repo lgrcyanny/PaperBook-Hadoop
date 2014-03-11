@@ -9,11 +9,11 @@ module.exports = {
     var sql = squel.select()
       .field('add_at')
       .from('paperbook.literatures')
-      .where('user_id=' + req.user.id)
+      .where('user_id=' + 1)
       .order('add_at');
     // console.log(sql.toString());
     utils.exec(sql.toString(), null, function (err, results) {
-      if (err || results.length == 0) {
+      if (err || !results) {
         results = [];
       };
       var highstockData = [];

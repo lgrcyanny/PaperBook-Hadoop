@@ -1,5 +1,5 @@
 //Literature.plugin(textSearch);
-var Literature = require('../models/literature');
+var literatureIndexModel = require('../hbase-models/index-title');
 
 exports.index = function (req, res) {
   res.render("search/index", {});
@@ -7,26 +7,19 @@ exports.index = function (req, res) {
 
 exports.showSearchResults = function (req, res) {
 
-  var title = (req.query.query === undefined) ? req.session.query : req.query.query,
-    startTime = new Date()
-      .getTime(),
-    page = req.query.p ? parseInt(req.query.p) : 1,
-    pageSize = 10;
+  var title = req.session.query ? req.session.query : req.query.query;
+  var startTime = new Date().getTime();
+  var page = req.query.p ? parseInt(req.query.p) : 1;
+  var pageSize = 10;
 
-  if (!(req.query.query === undefined)) {
-    Literature.findAllByTitle(title, function (err, results) {
-      if (err) {
-        results = []
-      };
-      req.session.total = results.length;
-      req.session.query = title;
-    });
+  if (!req.session.query) {
+    req.session.total = 50;
+    req.session.query = title;
   }
 
-  Literature.findByTitle(title, page, pageSize, function (err, results) {
-    var endTime = new Date()
-      .getTime(),
-      total = req.session.total;
+  literatureIndexModel.findByTitle(title, page, pageSize, function (err, results) {
+    var endTime = new Date().getTime();
+    var total = req.session.total;
 
     if (err) {
       results = [];
@@ -37,7 +30,7 @@ exports.showSearchResults = function (req, res) {
       page: page,
       total: total,
       time: (endTime - startTime) / 1000,
-      totalPage: Math.ceil(total / 10),
+      totalPage: Math.ceil(total / pageSize),
       isFirstPage: page == 1,
       isLastPage: page == this.totalPage,
       results: results
