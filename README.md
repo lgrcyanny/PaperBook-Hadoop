@@ -98,10 +98,10 @@ After you have build the reverted index in HBase, you can try the search functio
 ```
 
 ## Tests
+1. open test dir
+2. run batchtest.sh<BR>
+The batchtest.sh will run test-mysql.js, test-hbase-fullscan.js and test-hbase-index.js, 100 times for each.<BR>
 
-```sh
-$ npm test
-```
 
 ## Comments
 Originally, the project is built on mongodb, but our teacher said that we have to use mysql, which freaks us out.

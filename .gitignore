@@ -5,3 +5,4 @@ Makefile
 uploads/*
 npm-debug.log
 db/backup.sql
+*.csv

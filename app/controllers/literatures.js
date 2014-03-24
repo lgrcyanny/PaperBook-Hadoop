@@ -196,6 +196,7 @@ exports.removeFile = function (req, res) {
 exports.downloadFile = function (req, res) {
   var filepath = req.query.filepath;
   // Load the file from HDFS when not exists on local file system
+  var start = Date.now();
   fs.stat(filepath, function (err) {
     if (err) {
       hdfs.getFile(filepath, function (err, stdout, stderr) {
@@ -204,6 +205,7 @@ exports.downloadFile = function (req, res) {
         } else {
           console.log('HDFS Get File stdout: ' + stdout);
           console.log('HDFS Get File stderr: ' + stderr);
+          console.log("HDFS download time is " + (Date.now() -  start));
           res.download(filepath);
         }
       });
@@ -291,6 +293,7 @@ exports.fetchTags = function (req, res) {
  * @param  {[Object]} res      resoponse object
  */
 var uploadFile = function (file, type, username, res) {
+  var start = Date.now();
   var filename = file.originalFilename;
   var filepath = file.path;
   var filetype = file.type.split('/')[0];
@@ -313,6 +316,7 @@ var uploadFile = function (file, type, username, res) {
         console.log(err);
         res.send({success: false, errors: err});
       }
+
       // Save file to HDFS
       hdfs.putFile(serverpath, function (err, stdout, stderr) {
         console.log('HDFS stdout: ' + stdout);
@@ -321,6 +325,8 @@ var uploadFile = function (file, type, username, res) {
           console.log(err);
           res.send({success: false, errors: err});
         }
+        var end = Date.now();
+        console.log("Upload to HDFS with time " + (end - start));
         res.send({
           success: true,
           file: {
